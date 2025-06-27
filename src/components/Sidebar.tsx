@@ -2,20 +2,11 @@ import { useState } from "react";
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { SideNavItem } from "./SideNavItem"; // Adjust path if needed
-
-type SideNavElement = {
-  id: string;
-  name: string;
-  hint: string;
-};
+import { sideNavButtons } from "../data/navigationData";
+import type { SideNavElement } from "../types";
 
 export function Sidebar() {
-  const [sideNavElements, setSideNavElements] = useState<SideNavElement[]>([
-    { id: "element-1", name: "Element 1", hint: "Hint 1" },
-    { id: "element-2", name: "Element 2", hint: "Hint 2" },
-    { id: "element-3", name: "Element 3", hint: "Hint 3" },
-    { id: "element-4", name: "Element 4", hint: "Hint 4" },
-  ]);
+  const [sideNavElements, setSideNavElements] = useState<SideNavElement[]>(sideNavButtons);
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
