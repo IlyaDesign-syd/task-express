@@ -14,6 +14,14 @@ type UserState = {
   clearUser: () => void;
 };
 
+// For testing display
+const dummyUser: User = {
+  id: 'user-001',
+  fullName: 'Jane Doe',
+  email: 'jane.doe@example.com',
+  bio: 'Product Manager at Task Express',
+};
+
 export const useUserStore = create<UserState>((set) => ({
   user: null,
 
