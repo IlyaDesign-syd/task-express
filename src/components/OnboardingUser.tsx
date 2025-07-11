@@ -1,7 +1,11 @@
 import { useState } from "react";
 import type { UserOnboarding } from "../types/User";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const OnboardingUser = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+
   const [userFormRegistry, setUserFormRegistry] = useState<UserOnboarding>({
     firstName: "",
     lastName: "",
@@ -15,10 +19,27 @@ export const OnboardingUser = () => {
     }));
   };
 
-  const handleUserFormSubmit = (e: React.FormEvent) => {
+  const handleUserFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("User details submitted:", userFormRegistry);
-    // TODO: Send form to backend
+    
+    const token = await getAccessTokenSilently();
+
+    console.log('response body:')
+    console.log(JSON.stringify(userFormRegistry))
+
+    const response = await fetch("/api/users/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(userFormRegistry),
+    })
+
+    const UserDetails = await response.json();
+    console.log('registered user:')
+    console.log(UserDetails)
   };
 
   const userFields: (keyof UserOnboarding)[] = [
@@ -26,6 +47,8 @@ export const OnboardingUser = () => {
     "lastName",
     "email",
   ];
+
+   
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
