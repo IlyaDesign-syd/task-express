@@ -2,7 +2,8 @@ import { useUserStore } from "../stores/userStore";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthorizedUser } from "../hooks/useAuthorizedUser";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { OnboardingModal } from "./OnboardingModal";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -12,18 +13,19 @@ export function Navbar() {
 
   const { userDetails, fetchingUser, isFirstTimeUser } = useAuthorizedUser();
 
-  useEffect(() => {
-    
-  }, [userDetails, fetchingUser, isFirstTimeUser])
+  const [onboardingModalOpen, setOnboardingModalOpen] = useState(false)
 
-  // const {data, isLoading} = useQuery({queryKey: ['users'],
-  //   queryFn: async () => {
-  //     const userRes = await fetch(`/api/users`);
-  //     if (!userRes.ok) throw new Error("Failed to fetch tasks");
-  //     const data = await userRes.json();
-  //     return data;
-  //   }
-  // });
+  useEffect(() => {
+    console.log("User details (Nav):");
+    console.log(isFirstTimeUser);
+    console.log("is user logged in? " + isAuthenticated);
+    setOnboardingModalOpen(isFirstTimeUser && isAuthenticated)
+    console.log("🪟 Modal open:", onboardingModalOpen);
+  }, [userDetails, fetchingUser, isFirstTimeUser, isAuthenticated]);
+
+  const handleUserSubmit = () => {
+    console.log('User details submitted:... wip')
+  }
 
   const initials = loggedUser?.fullName
     ? loggedUser.fullName
@@ -37,12 +39,12 @@ export function Navbar() {
     <nav className="bg-gray-800 text-white h-12 px-4 flex items-center justify-between shadow">
       <h1 className="text-sm font-semibold">Task Express</h1>
       <div className="w-8 h-8 bg-gray-600 rounded-md flex items-center justify-center text-xs font-bold">
+        <OnboardingModal
+          isOpen={onboardingModalOpen}
+          onClose={() => setOnboardingModalOpen(false)}
+        />
         {isLoading && <p>Loading user info...</p>}
-        {isAuthenticated && (
-          <p className="text-xs">
-            {initials} data: 
-          </p>
-        )}
+        {isAuthenticated && <p className="text-xs">{initials} data:</p>}
 
         {!isAuthenticated ? (
           <button

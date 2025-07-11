@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useUserStore } from "../stores/userStore";
+import type { UserResponse } from "../types/User";
 
 export const useAuthorizedUser = () => {
   // If true, user gets redirect to onboarding
@@ -13,22 +14,22 @@ export const useAuthorizedUser = () => {
   // Update user state based on DB - set to null if first time user
   const setUserState = useUserStore((state) => state.setUser);
 
-  // Get user details
+  // Response is user details upon login (if first time user, only {isFirstTimeUser: false} is returned without details)
   const { data: userDetails, isLoading: fetchingUser, refetch } = useQuery({
     queryKey: ["users", user?.sub],
     enabled: !!user?.sub,
     queryFn: async () => {
       const token = await getAccessTokenSilently();
-
-      console.log('token:', token);
-
-      const userRes = await fetch(`/api/users/protected`, {
+      const userRes = await fetch(`/api/users/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       if (!userRes.ok) throw new Error("Failed to get user details from DB");
-      console.log("user details", userRes);
+
+      const userData: UserResponse = await userRes.json();
+      setIsFirstTimeUser(!userData.isUserRegistered);
+
       return userRes.json();
     },
   });

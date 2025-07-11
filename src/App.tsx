@@ -1,7 +1,14 @@
 import { Navbar } from "./components/Navbar";
+import { OnboardingUser } from "./components/OnboardingUser";
 import { Sidebar } from "./components/Sidebar";
+import { TaskList } from "./components/TaskList";
 import "./globals.css";
+import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 
+const router = createBrowserRouter([
+  { path: "/", element: <TaskList /> },
+  { path: "/register", element: <OnboardingUser /> },
+]);
 function App() {
   return (
     <>
@@ -10,10 +17,8 @@ function App() {
       {/* Everything beneath the top nav (side nav + content) */}
       <div className="flex p-4 h-[calc(100vh-3rem)]">
         <Sidebar />
-
-        <main className="flex-1 pl-4">
-          <div className="bg-green-500 text-white p-4 rounded">Title</div>
-        </main>
+        <RouterProvider router={router} />
+        <TaskList />
       </div>
     </>
   );
