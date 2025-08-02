@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import type { ProjectRequest } from "../types/Project.types";
+import type { ProjectRequest, ProjectResponse } from "../types/Project.types";
 
-export const createNewProject = async(ProjectDetails: ProjectRequest) => {
+export const createNewProject = async(ProjectDetails: ProjectRequest): Promise<ProjectResponse> => {
   const projId = uuidv4();
   console.log("Creating project:", ProjectDetails);
-  return fetch(`/api/projects/${projId}`, {
+  const res = await fetch(`/api/projects/${projId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -15,4 +15,17 @@ export const createNewProject = async(ProjectDetails: ProjectRequest) => {
       projDescription: ProjectDetails.projDescription,
     }),
   });
+
+  return res.json();
+};
+
+export const getProjects = async(authToken: string): Promise<ProjectResponse[]> => {
+  const res = await fetch(`/api/projects/all`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
+
+  return res.json();
 };

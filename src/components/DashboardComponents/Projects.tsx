@@ -1,12 +1,28 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { createNewProject } from "../../services/project.service";
+import { createNewProject, getProjects } from "../../services/project.service";
+import { useEffect, useState } from "react";
+import type { ProjectResponse } from "../../types/Project.types";
 
 export const Projects = () => {
+
+  const [projects, setProjects] = useState<ProjectResponse[]>([]);
+  
   const { getAccessTokenSilently } = useAuth0();
   const handleProjCreate = async () => {
     const token = await getAccessTokenSilently();
-    createNewProject({ auth0Id: token, projName: "Test Project", projDescription: "This is a test project" });
+    // TODO: Create form and replace default values with input
+    const createdProject = await createNewProject({ auth0Id: token, projName: "Test Project", projDescription: "This is a test project" });
+    setProjects([...projects, createdProject]);
   };
+
+
+  useEffect(() => {
+    const getUserProjects = async () => {
+      const token = await getAccessTokenSilently();
+      const userProjects = await getProjects(token)
+      getProjects(token).then(res => res.json()).then(res => setProjects(res))
+    }
+  }, [])
   return (
     <div className="">
       <h1>My Projects</h1>
