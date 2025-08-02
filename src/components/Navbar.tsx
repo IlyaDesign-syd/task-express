@@ -19,7 +19,7 @@ export function Navbar() {
     console.log(isFirstTimeUser);
     console.log("is user logged in? " + isAuthenticated);
     // setOnboardingModalOpen(isFirstTimeUser && isAuthenticated)
-    if(isAuthenticated && isFirstTimeUser) navigate('/register')
+    if(isAuthenticated && isFirstTimeUser) navigate('/onboarding')
     console.log("🪟 Modal open:", onboardingModalOpen);
   }, [userDetails, fetchingUser, isFirstTimeUser, isAuthenticated]);
 
